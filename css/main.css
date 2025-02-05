@@ -1,0 +1,32 @@
+#app {
+    display: flex;
+    align-items: start;
+}
+
+#app > div {
+    display: flex;
+    align-items: start;
+    width: 80%;
+}
+
+.column {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: inline-block;
+    vertical-align: top;
+    width: 30%;
+}
+.card {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.completed {
+    text-decoration: line-through;
+}
+ .button {
+     height: 100px;
+ }
