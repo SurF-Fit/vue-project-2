@@ -10,6 +10,15 @@ new Vue({
         newCardTitle: [],
     },
     methods: {
+        show(){
+            let carts = document.querySelectorAll('.cart');
+            for (let cart of carts){
+                if(cart.style.display === "flex"){
+                    cart.style.display = "none"
+                }
+                else cart.style.display = 'flex';
+            }
+        },
         formatDate(date) {
             const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
             return date.toLocaleString('ru-RU', options);

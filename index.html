@@ -10,8 +10,9 @@
 </head>
 <body>
 <div id="app">
-    <div style="display: flex; flex-direction: column; width: max-content">
-        <button class="button" @click="clearStorage">Очистить хранилище</button>
+    <div style="display: flex; flex-direction: column; width: max-content; gap: 10px">
+        <button class="button" @click="clearStorage"><img src="assets/trashBox.png" alt="trashBox"></button>
+        <button class="button" @click="show()"><img src="assets/plass.png" alt="plass"></button>
     </div>
     <div>
         <div v-for="(column, index) in columns" :key="index" class="column">
@@ -24,15 +25,19 @@
                         <span :class="{ completed: item.completed }">{{ item.text }}</span>
                     </li>
                 </ul>
-                <input v-if="index === 0" v-model="newTaskText[columns.findIndex(column => column.cards.includes(card))]" placeholder="Новая задача">
-                <button v-if="index === 0" @click="addTask(card)">Добавить задачу</button>
+                <div style="display: flex; flex-direction: row; width: 40%;; gap: 5px">
+                    <input v-if="index === 0" v-model="newTaskText[columns.findIndex(column => column.cards.includes(card))]" placeholder="Новая задача">
+                    <button v-if="index === 0" @click="addTask(card)">+</button>
+                </div>
                 <p style="color: red" id="error"></p>
                 <div v-if="card.completedAt">
                     <strong>Завершено:</strong> {{ formatDate(new Date(card.completedAt)) }}
                 </div>
             </div>
-            <input v-if="index === 0" type="text" v-model="newCardTitle[index]" placeholder="Введите заголовок карточки" />
-            <button v-if="index === 0" @click="addCard(index)" :disabled="!isEditable(index)">Добавить карточку</button>
+            <div style="display: flex; gap: 20px">
+                <input class="cart" v-if="index === 0" type="text" v-model="newCardTitle[index]" placeholder="Введите заголовок карточки" />
+                <button class="cart" v-if="index === 0" @click="addCard(index); show()" :disabled="!isEditable(index)">Добавить карточку</button>
+            </div>
         </div>
     </div>
 </div>
