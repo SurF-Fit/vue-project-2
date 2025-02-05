@@ -17,6 +17,9 @@ new Vue({
         isEditable(index) {
             return index === 0 ? this.columns[0].cards.length < 3 : true;
         },
+        isEditable2(index) {
+            return index === 0 ? this.columns[1].cards.length < 5 : true;
+        },
         addCard(columnIndex) {
             if (this.newCardTitle[columnIndex].trim() === '') return;
 
@@ -50,9 +53,10 @@ new Vue({
             card.completedItems = completedCount;
 
             const totalTasks = card.items.length;
+            const rate = (completedCount / totalTasks) * 100;
 
             if (totalTasks > 0) {
-                if (completedCount > totalTasks / 2) {
+                if (rate > 50 && rate < 80) {
                     const currentColumnIndex = this.columns.findIndex(column => column.cards.includes(card));
                     if (currentColumnIndex < this.columns.length - 1) {
                         this.columns[currentColumnIndex + 1].cards.push(card);
@@ -61,7 +65,7 @@ new Vue({
                     }
                 }
 
-                if (completedCount === totalTasks) {
+                if (rate === 100) {
                     const currentColumnIndex = this.columns.findIndex(column => column.cards.includes(card));
                         card.completedAt = new Date().toLocaleString();
                         this.columns[this.columns.length - 1].cards.push(card);

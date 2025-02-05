@@ -10,7 +10,9 @@
 </head>
 <body>
 <div id="app">
-    <button class="button" @click="clearStorage">Очистить хранилище</button>
+    <div style="display: flex; flex-direction: column; width: max-content">
+        <button class="button" @click="clearStorage">Очистить хранилище</button>
+    </div>
     <div>
         <div v-for="(column, index) in columns" :key="index" class="column">
             <h2>{{ column.title }}</h2>
@@ -18,7 +20,7 @@
                 <h3>{{ card.title }}</h3>
                 <ul>
                     <li v-for="(item, itemIndex) in card.items" :key="itemIndex">
-                        <input :disabled="index === 2 || card.items.length < 3" type="checkbox" v-model="item.completed" @change="updateCompletion(card)" />
+                        <input :disabled="!isEditable2(index) || index === 2 || card.items.length < 3" type="checkbox" v-model="item.completed" @change="updateCompletion(card)" />
                         <span :class="{ completed: item.completed }">{{ item.text }}</span>
                     </li>
                 </ul>

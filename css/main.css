@@ -27,6 +27,11 @@
 .completed {
     text-decoration: line-through;
 }
+
  .button {
      height: 100px;
+ }
+
+ li {
+     list-style: none;
  }
