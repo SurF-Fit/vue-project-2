@@ -8,8 +8,23 @@ new Vue({
         ],
         newTaskText: [],
         newCardTitle: [],
+        priorityCard: null,
     },
     methods: {
+        setPriority(card) {
+            const columnIndex = this.columns.findIndex(column => column.cards.includes(card));
+
+            if (columnIndex === 2) {
+                this.priorityCard = null;
+            } else {
+                if (this.priorityCard === card) {
+                    this.priorityCard = null;
+                } else {
+                    this.priorityCard = card;
+                }
+            }
+            this.saveData();
+        },
         show(){
             let carts = document.querySelectorAll('.cart');
             for (let cart of carts){
@@ -33,6 +48,7 @@ new Vue({
             if (this.newCardTitle[columnIndex].trim() === '') return;
 
             const newCard = {
+                id: Date.now(),
                 title: this.newCardTitle[columnIndex],
                 items: [],
                 completedItems: 0,
@@ -64,39 +80,59 @@ new Vue({
             const totalTasks = card.items.length;
             const rate = (completedCount / totalTasks) * 100;
 
-            if (totalTasks > 0) {
-                if (rate > 50 && rate < 80) {
-                    const currentColumnIndex = this.columns.findIndex(column => column.cards.includes(card));
-                    this.columns[currentColumnIndex + 1].cards.push(card);
-                    this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
-                    this.saveData();
-                }
+            const currentColumnIndex = this.columns.findIndex(column => column.cards.includes(card));
 
-                if (rate === 100) {
-                    const currentColumnIndex = this.columns.findIndex(column => column.cards.includes(card));
-                    card.completedAt = new Date().toLocaleString();
-                    this.columns[this.columns.length - 1].cards.push(card);
-                    this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
-                    this.saveData();
-                }
+            if (rate > 50 && rate < 100 && currentColumnIndex < this.columns.length - 1) {
+                this.columns[currentColumnIndex + 1].cards.push(card);
+                this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
             }
+
+            if (rate <= 50 && currentColumnIndex > 0) {
+                this.columns[currentColumnIndex - 1].cards.push(card);
+                this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
+            }
+
+            if (rate === 100 && currentColumnIndex < this.columns.length - 1) {
+                card.completedAt = new Date().toLocaleString();
+                this.columns[this.columns.length - 1].cards.push(card);
+                this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
+            }
+
+            if (rate === 100) {
+                this.priorityCard = null;
+            }
+
+            this.saveData();
         },
         saveData() {
             localStorage.setItem('taskManagerData', JSON.stringify(this.columns));
+            localStorage.setItem('priorityCardId', this.priorityCard ? this.priorityCard.id : null);
         },
         clearStorage() {
             localStorage.removeItem('taskManagerData');
+            localStorage.removeItem('priorityCard');
             this.columns = [
                 { title: 'Новые задачи', cards: [] },
                 { title: 'Ну вот почти-почти', cards: [] },
                 { title: 'Выполненые задачи', cards: [] },
             ];
+            this.priorityCard = null;
         }
     },
     mounted() {
         const savedData = localStorage.getItem('taskManagerData');
+        const savedPriorityCardId = localStorage.getItem('priorityCardId');
         if (savedData) {
             this.columns = JSON.parse(savedData);
+        }
+        if (savedPriorityCardId) {
+            const cardId = parseInt(savedPriorityCardId, 10);
+            for (const column of this.columns) {
+                const card = column.cards.find(card => card.id === cardId);
+                if (card) {
+                    this.priorityCard = card;
+                }
+            }
         }
     }
 });
