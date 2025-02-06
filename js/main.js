@@ -3,7 +3,7 @@ new Vue({
     data: {
         columns: [
             { title: 'Новые задачи', cards: [] },
-            { title: 'Задачи выполненые на половину', cards: [] },
+            { title: 'Ну вот почти-почти', cards: [] },
             { title: 'Выполненые задачи', cards: [] },
         ],
         newTaskText: [],
@@ -67,19 +67,17 @@ new Vue({
             if (totalTasks > 0) {
                 if (rate > 50 && rate < 80) {
                     const currentColumnIndex = this.columns.findIndex(column => column.cards.includes(card));
-                    if (currentColumnIndex < this.columns.length - 1) {
-                        this.columns[currentColumnIndex + 1].cards.push(card);
-                        this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
-                        this.saveData();
-                    }
+                    this.columns[currentColumnIndex + 1].cards.push(card);
+                    this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
+                    this.saveData();
                 }
 
                 if (rate === 100) {
                     const currentColumnIndex = this.columns.findIndex(column => column.cards.includes(card));
-                        card.completedAt = new Date().toLocaleString();
-                        this.columns[this.columns.length - 1].cards.push(card);
-                        this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
-                        this.saveData();
+                    card.completedAt = new Date().toLocaleString();
+                    this.columns[this.columns.length - 1].cards.push(card);
+                    this.columns[currentColumnIndex].cards.splice(this.columns[currentColumnIndex].cards.indexOf(card), 1);
+                    this.saveData();
                 }
             }
         },
@@ -90,7 +88,7 @@ new Vue({
             localStorage.removeItem('taskManagerData');
             this.columns = [
                 { title: 'Новые задачи', cards: [] },
-                { title: 'Задачи выполненые на половину', cards: [] },
+                { title: 'Ну вот почти-почти', cards: [] },
                 { title: 'Выполненые задачи', cards: [] },
             ];
         }
